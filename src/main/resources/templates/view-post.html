@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title th:text="${postDto.title}"></title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .comment-container {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            background: #f8f9fa;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            border-left: 3px solid #4e73df;
+        }
+
+        .comment-container:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            background: #ffffff;
+        }
+
+        .comment-content {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #333;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px dashed #e0e0e0;
+        }
+
+        .comment-content strong {
+            font-weight: 500;
+            color: #2d3748;
+        }
+
+        .comment-meta {
+            display: flex;
+            gap: 15px;
+            font-size: 12px;
+            color: #718096;
+        }
+
+        .comment-meta p {
+            margin: 3px 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .comment-meta b {
+            font-weight: 500;
+            margin-right: 5px;
+            color: #4a5568;
+        }
+
+        .comment-meta strong {
+            font-weight: 400;
+            color: #4e73df;
+        }
+    </style>
+</head>
+
+<body>
+
+<!--   NAVBAR     -->
+<div th:replace="~{fragments :: navbar}"/>
+<!--     END NAVBAR   -->
+
+<div class="container" style="margin-top: 70px">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <h2 th:text="${postDto.title}"></h2>
+            <hr/>
+            <h4 th:text="${postDto.description}"></h4>
+            <hr/>
+            <div th:utext="${postDto.content}"></div>
+        </div>
+
+
+<!--   COMMENTS      -->
+        <div>
+            <br><br>
+            <h3>Комментарии:</h3>
+            <br><br>
+
+            <div th:each="comment : ${postDto.commentDtos}" class="comment-container">
+                <div>
+                    <p class="comment-content"><strong th:text="${comment.content}"></strong></p>
+                    <div class="comment-meta">
+                        <p><b>Created at: </b><strong th:text="${#temporals.format(comment.createdAt, 'dd-MM-yyyy hh:mm')}"></strong></p>
+                        <p><b>By: </b><strong th:text="${comment.authorUsername}"></strong></p>
+                    </div>
+                </div>
+            </div>
+<!--            <div th:each="comment : ${postDto.commentDtos}">-->
+<!--                <div>-->
+<!--                    <p><b>Comment: </b><strong th:text="${comment.content}"></strong></p>-->
+<!--                    <p style="{font-size: 10px}"><b>Created at: </b><strong th:text="${#temporals.format(comment.createdAt, 'dd-MM-yyyy hh:mm')}"></strong></p>-->
+<!--                    <p style="{font-size: 10px}"><b>By: </b><strong th:text="${comment.authorUsername}"></strong></p>-->
+<!--                    <br>-->
+<!--                </div>-->
+<!--            </div>-->
+
+            <!--  LEAVE COMMENTS      -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Оставить комментарий:</h2>
+                </div>
+                <div class="card-body">
+                    <form th:object="${commentDto}"
+                          th:action="@{/posts/{postId}/comments(postId=${postDto.id})}"
+                          method="post"
+                          role="form">
+                        <input type="hidden" name="userId" th:value="${session.CURRENT_USER_ID}">
+                        <div class="row">
+                            <div class="col-md-5 mb-3">
+                                <textarea class="form-control" th:field="*{content}" id="" rows="8" placeholder="Enter a comment here"></textarea>
+                            </div>
+                            <p th:if="${#fields.hasErrors('content')}" th:errors="*{content}" class="text-danger"></p>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-5">
+                                <button  class="btn btn-primary" type="submit">Отправить</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<hr>
+
+
+
+<br><br>
+
+<!--   FOOTER     -->
+<div th:replace="~{fragments :: footer}"/>
+<!--   END FOOTER     -->
+
+<!--    for Delete button    -->
+<script>
+    function deletePost(){
+        if (confirm("Вы уверены ?")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

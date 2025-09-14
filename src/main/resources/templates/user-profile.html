@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мой профиль</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+<!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">-->
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding-top: 40px;
+        }
+        .profile-card {
+            max-width: 800px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            background-color: #fff;
+        }
+        .avatar-container {
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: #fafbfc;
+        }
+        .avatar {
+            width: 160px;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 1px solid #eaecef;
+            background-color: #f0f2f5;
+        }
+        .info-container {
+            padding: 40px 30px;
+        }
+        .form-item {
+            margin-bottom: 25px;
+        }
+        .section-title {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .actions-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 30px;
+        }
+        .btn-action {
+            width: 100%;
+            max-width: 300px;
+            margin-bottom: 15px;
+        }
+        .avatar-upload {
+            /*position: relative;*/
+            /*display: inline-block;*/
+            /*margin-top: 20px;*/
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Центрирование по горизонтали */
+            text-align: center; /* Для текста внутри */
+            max-width: 300px; /* Опционально: ограничение ширины */
+            margin: 0 auto; /* Центрирование блока в родительском контейнере */
+        }
+        .avatar-upload-label {
+            cursor: pointer;
+            padding: 8px 15px;
+            background: #e9ecef;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            transition: background 0.2s;
+        }
+        .avatar-upload-label:hover {
+            background: #dee2e6;
+        }
+        #avatarInput {
+            display: none;
+        }
+
+        /* Основные стили кнопки DELETE PROFILE */
+        .delete-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 24px;
+            background: linear-gradient(to bottom, #ff4d4d, #e60000);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Эффект при наведении */
+        .delete-btn:hover {
+            background: linear-gradient(to bottom, #ff3333, #cc0000);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(230, 0, 0, 0.25);
+        }
+
+        /* Эффект при нажатии */
+        .delete-btn:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Иконка корзины */
+        .delete-icon {
+            margin-right: 8px;
+            width: 20px;
+            height: 20px;
+            position: relative;
+        }
+
+        /* Анимация иконки */
+        .delete-icon::before,
+        .delete-icon::after {
+            content: '';
+            position: absolute;
+            background: white;
+            border-radius: 2px;
+        }
+
+        .delete-icon::before {
+            top: 2px;
+            left: 7px;
+            width: 6px;
+            height: 18px;
+            background: #fff;
+        }
+
+        .delete-icon::after {
+            top: -3px;
+            left: 2px;
+            width: 16px;
+            height: 3px;
+            border-radius: 4px 4px 0 0;
+        }
+
+        /* Эффект пульсации */
+        .delete-btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(0);
+            opacity: 0;
+            border-radius: 8px;
+            transition: transform 0.6s, opacity 0.6s;
+        }
+
+        .delete-btn:hover::after {
+            transform: scale(1.5);
+            opacity: 1;
+        }
+
+    </style>
+</head>
+<body>
+<!--   NAVBAR     -->
+<div th:replace="~{fragments :: navbar}"/>
+<!--     END NAVBAR   -->
+
+<br>
+<br>
+<br>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="profile-card card">
+                <div class="row g-0">
+                    <!-- Аватар -->
+                    <div class="col-md-4 avatar-container">
+                         <img th:src="@{/users/{userId}/avatar(userId=${userDto.id})}" alt="Аватар" class="avatar" id="avatarPreview">
+                    </div>
+
+                    <!-- Форма редактирования -->
+                    <div class="col-md-8 info-container">
+                        <h2 class="section-title">Редактирование профиля</h2>
+
+                        <form th:object="${userDto}"
+                              th:action="@{/users/{userId}/update(userId=${userDto.id})}"
+                              id="profileForm"
+                              method="post"
+                              enctype="multipart/form-data">
+
+                            <input type="hidden" th:field="*{imagePath}">
+                            <input type="hidden" th:field="*{id}">
+
+                            <div class="form-item">
+                                <label for="username" class="form-label">Логин</label>
+                                <input th:field="*{username}" type="text" class="form-control form-control-lg" id="username">
+                            </div>
+                            <p th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="text-danger"></p>
+
+                            <div class="form-item">
+                                <label for="firstname" class="form-label">Имя</label>
+                                <input th:field="*{firstname}" type="text" class="form-control form-control-lg" id="firstname" >
+                            </div>
+                            <p th:if="${#fields.hasErrors('firstname')}" th:errors="*{firstname}" class="text-danger"></p>
+
+                            <div class="form-item">
+                                <label for="lastname" class="form-label">Фамилия</label>
+                                <input th:field="*{lastname}" type="text" class="form-control form-control-lg" id="lastname">
+                            </div>
+                            <p th:if="${#fields.hasErrors('lastname')}" th:errors="*{lastname}" class="text-danger"></p>
+
+                            <div class="avatar-upload">
+                                <label for="avatarInput" class="avatar-upload-label">
+                                    Изменить аватар
+                                </label>
+                                <input th:field="*{imageFile}" type="file" id="avatarInput" accept="image/*">
+                            </div>
+
+                            <div class="actions-container">
+                                <button type="submit" class="btn btn-primary btn-lg btn-action">
+                                    Редактировать профиль
+                                </button>
+                                <a th:href="@{/users/{userId}/posts(userId=${userDto.id})}" type="button" class="btn btn-outline-secondary btn-lg btn-action" id="cancelBtn">
+                                    Публикации пользователя
+                                </a>
+                                <a th:href="@{/users/{userId}/delete(userId=${userDto.id})}" onclick="return deleteUser();" class="delete-btn">
+                                    <span class="delete-icon"></span>
+                                    Удалить профиль
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<br><br><br>
+
+<!--   FOOTER     -->
+<div th:replace="~{fragments :: footer}"/>
+<!--   END FOOTER     -->
+
+<script>
+    function deleteUser(){
+        if (confirm("Вы уверены ?")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+</script>
+
+<!-- Bootstrap JS -->
+<script src="/js/bootstrap.bundle.min.js"></script>
+<!--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>-->
+
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Публикации (ADMIN)</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+
+<!--   NAVBAR     -->
+<div th:replace="~{fragments :: navbar}"/>
+<!--     END NAVBAR   -->
+
+<div class="container col-lg-11" style="margin-top: 70px">
+
+    <div class="row">
+        <h1>Публикации</h1>
+    </div>
+
+<!--      SEARCH POSTS FORM       -->
+    <div class="row">
+        <div class="col-md-5">
+            <div class="form-group">
+                <form th:action="@{/admin/posts/search}" method="get" class="form-check-inline">
+                    <div class="input-group">
+                        <input type="text" name="query" class="form-control">
+                        <span class="input-group-btn">
+                            <button type="submit" class="btn btn-primary">Найти</button>
+                        </span>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <br><br>
+
+    <!--     TABLE POSTS      -->
+    <table class="table table-striped table-hover table-bordered">
+        <thead class="table-dark">
+            <th style="width: 10%"  class="text-center">#</th>
+            <th style="width: 20%" class="text-center">Заголовок</th>
+            <th style="width: 30%" class="text-center">Описание</th>
+            <th style="width: 10%" class="text-center">Создано</th>
+            <th style="width: 10%" class="text-center">Обновлено</th>
+            <th style="width: 10%" class="text-center">Автор</th>
+            <th style="width: 20%" class="text-center">Действия</th>
+        </thead>
+        <tbody>
+        <tr th:each="post, postStat : ${posts}">
+            <td th:text="${postStat.count}"></td>
+            <td th:text="${post.title}"></td>
+            <td th:text="${post.description}"></td>
+            <td th:text="${#temporals.format(post.createdAt, 'dd-MM-yyyy HH:mm')}"></td>
+            <td th:text="${#temporals.format(post.updatedAt, 'dd-MM-yyyy HH:mm')}"></td>
+            <td th:text="${post.authorUsername}"></td>
+            <td style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
+                <div style="display: flex; gap: 5px; flex-wrap: wrap; justify-content: center;">
+                    <a th:href="@{/posts/{postId}/edit(postId=${post.id})}" class="btn btn-primary">Изменить</a>
+                    <a th:href="@{/posts/{postId}/delete(postId=${post.id})}" onclick="return deletePost();" class="btn btn-danger">Удалить</a>
+                    <a th:href="@{/posts/{postId}/view(postId=${post.id})}" class="btn btn-info">Посмотреть</a>
+                </div>
+                <a th:href="@{/posts/{postId}/comments((postId=${post.id}))}" class="btn btn-outline-success">Комментарии</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <!--     END TABLE POSTS      -->
+
+    <br><br>
+
+</div>
+
+<!--   FOOTER     -->
+<div th:replace="~{fragments :: footer}"/>
+<!--   END FOOTER     -->
+
+<script>
+    function deletePost(){
+        if (confirm("Вы уверены ?")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,26 @@
+.comment-card {
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    transition: transform 0.2s;
+}
+.comment-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+.comment-header {
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    background-color: #f8f9fa;
+}
+.comment-date {
+    font-size: 0.8rem;
+    color: #6c757d;
+}
+.btn-comment {
+    padding: 4px 8px;
+    font-size: 0.85rem;
+    text-decoration: none !important;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}

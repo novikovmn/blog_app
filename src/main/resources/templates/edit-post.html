@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Изменить публикацию</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<!--   NAVBAR     -->
+<div th:replace="~{fragments :: navbar}"/>
+<!--     END NAVBAR   -->
+
+<br>
+<br>
+<br>
+
+<div class="container">
+    <div class="row col-md-8 offset-md-2">
+        <div class="card-header">
+            <h2 class="text-center">Изменить публикацию</h2>
+        </div>
+        <div class="card-body">
+            <form th:action="@{/posts/{postId}(postId=${postDto.id})}" th:object="${postDto}" method="post" role="form">
+                <div class="mb-3">
+                    <label class="form-label" for="title">Заголовок: </label>
+                    <input th:field="*{title}" type="text" class="form-control" id="title"
+                           placeholder="Enter post title">
+                    <!--          ERROR MESSAGE              -->
+                    <p th:if="${#fields.hasErrors('title')}" th:errors="*{title}" class="text-danger"></p>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="description">Описание: </label>
+                    <textarea th:field="*{description}" class="form-control" rows="3" id="description"
+                              placeholder="Enter post description"/>
+                    <!--          ERROR MESSAGE              -->
+                    <p th:if="${#fields.hasErrors('description')}" th:errors="*{description}" class="text-danger"></p>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="postContent">Контент: </label>
+                    <textarea th:field="*{content}" class="form-control" rows="3" id="postContent"
+                              placeholder="Enter post content"/>
+                    <!--          ERROR MESSAGE              -->
+                    <p th:if="${#fields.hasErrors('content')}" th:errors="*{content}" class="text-danger"></p>
+                </div>
+                <button type="submit" class="btn btn-primary">Изменить</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<br>
+<br>
+<br>
+
+<!--   FOOTER     -->
+<div th:replace="~{fragments :: footer}"/>
+<!--   END FOOTER     -->
+
+<!--  FOR TEXT EDITOR (CKEditor)  -->
+<!--    <script src="/ckeditor5/ckeditor5.umd.js"></script>-->
+<script src="https://cdn.ckeditor.com/ckeditor5/41.2.1/classic/ckeditor.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        ClassicEditor.create(document.querySelector('#postContent'))
+            .then(editor => {
+                console.log('Editor initialized');
+            })
+            .catch(error => {
+                console.error('Initialization error:', error);
+            });
+    });
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

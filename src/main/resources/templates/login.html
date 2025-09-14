@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Логин</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<!--   NAVBAR     -->
+<div th:replace="~{fragments :: navbar}"/>
+<!--     END NAVBAR   -->
+
+<br>
+<br>
+<br>
+
+<div class="container">
+    <div class="row col-md-6 offset-md-3">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="text-center">Логин</h2>
+            </div>
+            <!--      ЕСЛИ ВВЕДЕНЫ НЕВЕРНЫЕ ДАННЫЕ      -->
+            <div th:if="${param.error}">
+                <div class="alert alert-danger">
+<!--                    Wrong username or password!-->
+                    Неверные имя пользователя или пароль!
+                </div>
+            </div>
+            <!--      УСПЕШНЫЙ LOGOUT      -->
+            <div th:if="${param.logout}">
+                <div class="alert alert-success">
+<!--                    You have been successfully logged out-->
+                    Вы успешно вышли из системы
+                </div>
+            </div>
+            <div class="card-body">
+                <form th:action="@{/login}"
+                        method="post"
+                        class="form-horizontal"
+                        role="form">
+                    <div class="form-group mb-3">
+                        <label for="username" class="control-label">Имя пользователя (email):</label>
+                        <input type="text" name="username" id="username" class="form-control" placeholder="Enter username">
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="password" class="control-label">Пароль:</label>
+                        <input type="password" name="password" id="password" class="form-control" placeholder="Enter password">
+                    </div>
+                    <div class="form-group mb-3">
+                        <button type="submit" class="btn btn-primary">Логин</button>
+                        <span>
+<!--                            Not registered yet?-->
+                            Еще не зарегистрированы ?
+                            <a th:href="@{/register}">Регистрация</a>
+                        </span>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<br>
+<br>
+<br>
+
+<!--   FOOTER     -->
+<div th:replace="~{fragments :: footer}"/>
+<!--   END FOOTER     -->
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Регистрация</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<!--   NAVBAR     -->
+<div th:replace="~{fragments :: navbar}"/>
+<!--     END NAVBAR   -->
+
+<br>
+<br>
+<br>
+
+<div class="container">
+    <div class="row">
+        <div class="row col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="text-center">Регистрация</h2>
+                </div>
+                <!--        ЕСЛИ РЕГИСТРАЦИЯ ПРОШЛА УСПЕШНО        -->
+                <div th:if="${param.success}">
+                    <div class="alert alert-info">
+<!--                        You have registered successfully! :) Check your email.-->
+                        Регистрация прошла успешно! :) Проверьте свой email.
+                    </div>
+                </div>
+                <!--        ФОРМА РЕГИСТРАЦИИ                 -->
+                <div class="card-body">
+                    <form th:object="${userDto}"
+                          th:action="@{/register}"
+                          method="post"
+                          role="form"
+                          enctype="multipart/form-data">
+                        <div class="form-group mb-3">
+                            <label for="firstname">Имя:</label>
+                            <input th:field="*{firstname}" type="text" class="form-control" id="firstname" placeholder="Enter first name">
+                        </div>
+                        <p th:if="${#fields.hasErrors('firstname')}" th:errors="*{firstname}" class="text-danger"></p>
+                        <div class="form-group mb-3">
+                            <label for="lastname">Фамилия:</label>
+                            <input th:field="*{lastname}" type="text" class="form-control" id="lastname" placeholder="Enter last name">
+                        </div>
+                        <p th:if="${#fields.hasErrors('lastname')}" th:errors="*{lastname}" class="text-danger"></p>
+                        <div class="form-group mb-3">
+                            <label for="username">Email:</label>
+                            <input required th:field="*{username}" type="text" class="form-control" id="username" placeholder="Enter email">
+                        </div>
+                        <p th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="text-danger"></p>
+                        <div class="form-group mb-3">
+                            <label for="password">Пароль:</label>
+                            <input required th:field="*{password}" type="password" class="form-control" id="password" placeholder="Enter password">
+                        </div>
+                        <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="text-danger"></p>
+                        <div class="form-group mb-3">
+                            <label for="avatar">Аватар:</label>
+                            <input th:field="*{imageFile}" type="file" class="form-control" id="avatar" accept="image/*">
+                        </div>
+                        <div class="form-group mb-3">
+                            <button class="btn btn-primary" type="submit">Регистрация</button>
+                            <span>
+<!--                                Already registered ?-->
+                                Уже зарегистрированы ?
+                                <a th:href="@{/login}">Логин</a>
+                            </span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<br>
+<br>
+<br>
+
+<!--   FOOTER     -->
+<div th:replace="~{fragments :: footer}"/>
+<!--   END FOOTER     -->
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
